@@ -220,4 +220,5 @@ __marimo__/
 # Custom
 delete_me.py
 .vscode
+*.DS_Store
 
