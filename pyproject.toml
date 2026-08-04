@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "odl_testing"
+authors = [
+    { "name" = "Josh Pilkington", "email" = "josh.pilkington@pro-machina.co.uk" },
+]
+version = "0.0.1"
+description = "A toolkit for testing the ODL Live API"
+dependencies = [
+    "setuptools<=82.0.1",
+    "python-dotenv<=1.2.1",
+    "requests<=2.32.5",
+    "types-requests",
+    "ruff<=0.15.11",
+    "mypy<=1.20.1",
+]
+
+[tool.ruff]
+src = ["src"]
+fix = true
+line-length = 79
+indent-width = 4
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "B",  # flake8-bugbear
+    "E",  # pycodestyle error
+    "F",  # pyflakes
+    "I",  # isort
+    "UP", # pyupgrade
+    "W",  # pycodestyle warning
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "E402"]
+
+[tool.ruff.lint.isort]
+force-single-line = false
+order-by-type = true
+
+[tool.mypy]
+allow_redefinition = true
