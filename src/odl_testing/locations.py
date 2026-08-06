@@ -18,7 +18,7 @@ class Location:
         self.lon = lon
 
     def _serialize(self) -> dict:
-        rtn = {"latitude": self.lat, "longitude": self.lon}
+        rtn = {"latitude": round(self.lat, 4), "longitude": round(self.lon, 4)}
         return rtn
 
     def __repr__(self):

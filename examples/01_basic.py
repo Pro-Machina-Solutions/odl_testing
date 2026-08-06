@@ -24,8 +24,8 @@ NUM_LOCATIONS = 20
 
 # We can set a time window for when our problem spans. For now, we'll just
 # cover one shift
-START_TIME = "2026-08-03 09:00:00"
-END_TIME = "2026-08-03 18:00:00"
+START_TIME = "2026-08-07 09:00:00"
+END_TIME = "2026-08-07 18:00:00"
 
 # Internal plumbing to make sure the job times always fall within the shift we
 # just chose and nothing is raised 30 mins before the end of the shift
@@ -89,7 +89,7 @@ for i in range(2):
             end_type=VehicleAct.END_AT_DEPOT,
             start_location=depot,
             end_location=depot,
-            vtype=generic_vehicle
+            vtype=generic_vehicle,
         )
     )
 
