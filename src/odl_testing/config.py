@@ -1,5 +1,6 @@
 import os
 import warnings
+from typing import Any, Self
 
 from dotenv import find_dotenv, load_dotenv
 
@@ -7,22 +8,53 @@ load_dotenv(find_dotenv())
 
 
 class Config:
+    """Main config parameters for solving VRP problems
+
+    Parameters
+    ----------
+    base_url : str, optional
+        The solver host URL, by default "http://127.0.0.1"
+    port : int, optional
+        The solver host port, by default 8080
+    username : str, optional
+        Login username for the solver, by default
+        `os.environ.get("USER_NAME")`
+    password : str, optional
+        Login password for the solver, by default
+        os.environ.get("USER_PASS")
+    road_network_time_multiplier : float, optional
+        Travel time multiplier if using a real road network, by default 1.0
+    use_road_network : bool, optional
+        Travel distances to use. If not supplied, the Haversine distance
+        will be used, by default False
+    straight_line_speed_metres_per_sec : float, optional
+        Assumed travel speed for Haversine distance, by default 22.352
+    straight_line_distance_multiplier : float, optional
+        Travel distance multiplier if using Haversine distances, by
+        default 1.0
+    """
+
     def __init__(
         self,
         base_url: str = "http://127.0.0.1",
         port: int = 8080,
+        username: str = os.environ.get("USER_NAME"),
+        password: str = os.environ.get("USER_PASS"),
         road_network_time_multiplier: float = 1.0,
         use_road_network: bool = False,
         straight_line_speed_metres_per_sec: float = 22.352,
         straight_line_distance_multiplier: float = 1.0,
-    ):
-        self.username = os.environ.get("USER_NAME")
-        self.password = os.environ.get("USER_PASS")
+    ) -> Self:
+        self.username = username
+        self.password = password
 
-        if self.username is None:
+        self._offline = True
+        if self.username is None or self.password is None:
             warnings.warn(
-                "No access credentials for server found", stacklevel=1
+                "No login credentials supplied, so problem can only be built"
+                " but not dispatched to be solved"
             )
+            self._offline = False
 
         self.base_url = base_url
         self.port = str(port)
@@ -36,7 +68,7 @@ class Config:
             straight_line_distance_multiplier
         )
 
-    def _serialize(self):
+    def _serialize(self) -> dict[Any, Any]:
         rtn = {
             "distances": {
                 "roadNetworkTimeMultiplier": self.road_network_time_multiplier,

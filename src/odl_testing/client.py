@@ -1,5 +1,4 @@
 import base64
-import json
 from typing import Any
 
 import requests
@@ -16,18 +15,21 @@ class Client:
             (f"{self.config.username}:{self.config.password}").encode()
         ).decode("utf-8")
         self.auth_header = {"Authorization": f"Basic {auth}"}
-        print(self.auth_header)
         self.url = f"{self.config.base_url}:{self.config.port}/models"
 
-    def test(self):
-        req = requests.get(self.url, headers=self.auth_header)
-        return req
+    def test(self) -> requests.Response | None:
+        if not self.config._offline:
+            req = requests.get(self.url, headers=self.auth_header)
+            return req
+        else:
+            return None
 
     def send_model(self, model: dict[Any, Any], model_id: str):
         url = f"{self.url}/{model_id}"
         query = requests.put(
-            url, json=json.dumps(model), headers=self.auth_header
+            url, json=model, headers=self.auth_header
         )
+
         print(query)
 
     def get_req(self, body: dict[Any, Any]):

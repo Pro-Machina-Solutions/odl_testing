@@ -99,8 +99,8 @@ class Model:
             }
         }
         """
-        # req = self.client.send_model(self.base_json, self.model_id)
-        # print(req)
-        req = self.client.send_model(test_json, self.model_id)
+        req = self.client.send_model(self.base_json, self.model_id)
         print(req)
+        # req = self.client.send_model(json.loads(test_json), self.model_id)
+        # print(req)
         # print(json.dumps(self.base_json, indent=4))
