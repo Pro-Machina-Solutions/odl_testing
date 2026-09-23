@@ -26,9 +26,7 @@ class Client:
 
     def send_model(self, model: dict[Any, Any], model_id: str):
         url = f"{self.url}/{model_id}"
-        query = requests.put(
-            url, json=model, headers=self.auth_header
-        )
+        query = requests.put(url, json=model, headers=self.auth_header)
 
         print(query)
 

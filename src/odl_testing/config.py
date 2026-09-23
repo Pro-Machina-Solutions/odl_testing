@@ -1,6 +1,6 @@
 import os
 import warnings
-from typing import Any, Self
+from typing import Any
 
 from dotenv import find_dotenv, load_dotenv
 
@@ -38,13 +38,13 @@ class Config:
         self,
         base_url: str = "http://127.0.0.1",
         port: int = 8080,
-        username: str = os.environ.get("USER_NAME"),
-        password: str = os.environ.get("USER_PASS"),
+        username: str | None = os.environ.get("USER_NAME"),
+        password: str | None = os.environ.get("USER_PASS"),
         road_network_time_multiplier: float = 1.0,
         use_road_network: bool = False,
         straight_line_speed_metres_per_sec: float = 22.352,
         straight_line_distance_multiplier: float = 1.0,
-    ) -> Self:
+    ) -> None:
         self.username = username
         self.password = password
 
@@ -52,7 +52,8 @@ class Config:
         if self.username is None or self.password is None:
             warnings.warn(
                 "No login credentials supplied, so problem can only be built"
-                " but not dispatched to be solved"
+                " but not dispatched to be solved",
+                stacklevel=1,
             )
             self._offline = False
 

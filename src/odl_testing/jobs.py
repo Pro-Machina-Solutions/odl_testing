@@ -1,8 +1,8 @@
-import datetime as dt
 from enum import StrEnum
 from typing import Any
 
 from .locations import Location
+from .util import convert_to_model_time
 
 
 class _JobType(StrEnum):
@@ -35,35 +35,24 @@ class _Job:
         self._job_type = _job_type
 
     def _serialize(self) -> dict[str, Any]:
+        assert self._job_type is not None
+        stops: dict[str, str | int] = {}
         rtn = {
             "_id": self.name,
-            "stops": [
-                {
-                    "type": self._job_type.value,
-                    "durationMillis": self.duration,
-                    "coordinate": self.location._serialize(),
-                }
-            ],
+            "stops": [stops],
         }
         # TODO Can an open time be specified without a close time?
         # Don't need a late time
         # Not sure if needed close time. Based on vehicle
         if self.open_time is not None:
-            rtn["stops"][0]["openTime"] = dt.datetime.fromisoformat(
-                self.open_time
-            ).isoformat()
+            stops["openTime"] = convert_to_model_time(self.open_time)
         if self.close_time is not None:
-            rtn["stops"][0]["closeTime"] = dt.datetime.fromisoformat(
-                self.close_time
-            ).isoformat()
+            stops["closeTime"] = convert_to_model_time(self.close_time)
+
         if self.late_time is not None:
-            rtn["stops"][0]["lateTime"] = dt.datetime.fromisoformat(
-                self.late_time
-            ).isoformat()
-        else:
-            rtn["stops"][0]["lateTime"] = dt.datetime.fromisoformat(
-                self.close_time
-            ).isoformat()
+            stops["lateTime"] = convert_to_model_time(self.late_time)
+        elif self.close_time is not None:
+            stops["lateTime"] = convert_to_model_time(self.close_time)
 
         return rtn
 

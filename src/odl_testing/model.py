@@ -1,4 +1,3 @@
-import json
 import uuid
 from typing import Any
 
@@ -13,7 +12,7 @@ class Model:
         self.config = config if config is not None else Config()
         self.jobs: list[dict[str, Any]] = []
         self.vehicles: list[dict[str, Any]] = []
-        self.base_json: dict[str, Any] = {
+        self._base_json: dict[str, Any] = {
             "data": {
                 "jobs": self.jobs,
                 "vehicles": self.vehicles,
@@ -33,74 +32,12 @@ class Model:
             raise TypeError("Incorrect vehicle type")
         self.vehicles.append(vehicle._serialise())
 
-    def build(self):
-        with open("model_output.json", "w") as outfile:
-            json.dump(self.base_json, outfile, indent=4)
-        test_json = """
-        {
-            "data": {
-                "jobs": [
-                    {
-                        "stops": [
-                            {
-                                "type": "SERVICE",
-                                "coordinate": {
-                                    "latitude": 51.5074,
-                                    "longitude": -0.1001
-                                },
-                                "openTime": "2099-01-01T09:00",
-                                "lateTime": "2099-01-01T17:00",
-                                "closeTime": "2099-01-02T17:00",
-                                "durationMillis": 3600000,
-                                "_id": "TateModern1"
-                            }
-                        ],
-                        "_id": "TateModern1"
-                    }
-                ],
-                "vehicles": [
-                    {
-                        "definition": {
-                            "start": {
-                                "type": "START_AT_DEPOT",
-                                "coordinate": {
-                                    "latitude": 51.5416,
-                                    "longitude": -0.1462
-                                },
-                                "openTime": "2099-01-01T08:00"
-                            },
-                            "end": {
-                                "type": "RETURN_TO_DEPOT",
-                                "coordinate": {
-                                    "latitude": 51.5416,
-                                    "longitude": -0.1462
-                                },
-                                "lateTime": "2099-01-01T18:00",
-                                "closeTime": "2099-01-02T18:00"
-                            },
-                            "costPerTravelHour": 1.0,
-                            "costPerWaitingHour": 0.5,
-                            "costPerServicingHour": 1.0,
-                            "costPerKm": 1e-06,
-                            "costFixed": 100.0,
-                            "costPerStop": 0.0
-                        },
-                        "_id": "Camden1"
-                    }
-                ]
-            },
-            "configuration": {
-                "distances": {
-                    "roadNetworkTimeMultiplier": 1.0,
-                    "useRoadNetwork": false,
-                    "straightLineSpeedMetresPerSec": 22.352,
-                    "straightLineDistanceMultiplier": 1.0
-                }
-            }
-        }
-        """
-        req = self.client.send_model(self.base_json, self.model_id)
-        print(req)
-        # req = self.client.send_model(json.loads(test_json), self.model_id)
-        # print(req)
-        # print(json.dumps(self.base_json, indent=4))
+    def build(self) -> dict[str, Any]:
+        # TODO for now we just send the same JSON object back, but we might
+        # need to add other modifications required in future
+        return self._base_json
+
+    def send(self) -> dict[str, Any]:
+        if self.config._offline:
+            return self._base_json
+        return self._base_json

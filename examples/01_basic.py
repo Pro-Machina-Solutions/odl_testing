@@ -1,4 +1,5 @@
 import datetime as dt
+import json
 import random
 from string import ascii_letters
 
@@ -94,3 +95,7 @@ for i in range(2):
     )
 
 model.build()
+
+print(json.dumps(model._base_json, indent=4))
+print(model.model_id)
+# send = model.send()
