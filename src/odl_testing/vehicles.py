@@ -6,11 +6,40 @@ from .locations import Location
 
 
 class VehicleAct(StrEnum):
+    """Define the start and end locations of the vehicle
+
+    TODO: This needs to be extended for options beyond just starting and ending
+    at the depot since this is not a requirement. These are just the baseline
+    options for a simple, static example.
+    """
+
     START_AT_DEPOT = "START_AT_DEPOT"
     END_AT_DEPOT = "RETURN_TO_DEPOT"
 
 
 class VehicleType:
+    """Defines the running cost of a vehicle type which can be set for multiple
+    vehicles.
+
+    Currently, if any values are omitted, they take the defaults listed in the
+    online documentation.
+
+    Parameters
+    ----------
+    cost_per_travel_hour : float, optional
+        By default 1.0
+    cost_per_wait_hour : float, optional
+        By default 0.5
+    cost_per_km : float, optional
+        By default 1.0e-6
+    cost_per_servicing_hour : float, optional
+        By default 1.0
+    fixed_cost : float, optional
+        By default 100.0
+    cost_per_stop : float, optional
+        By default 0.0
+    """
+
     def __init__(
         self,
         cost_per_travel_hour: float = 1.0,
@@ -39,6 +68,33 @@ class VehicleType:
 
 
 class Vehicle:
+    """Define the properties of an individual vehicle in the fleet.
+
+    Parameters
+    ----------
+    name : str
+        A unique identifier for the vehicle
+    start_time : str
+        The datetime of the vehicle start time in ISO 8601 format
+    start_type : VehicleAct
+        A defined starting location of the vehicle
+    late_time : str
+        The datetime of the vehicle end time in ISO 8601 format, after which
+        the vehicle will be considered to be working overtime.
+    end_time : str
+        The datetime of the vehicle end time in ISO 8601 format
+    end_type : VehicleAct
+        A defined ending location of the vehicle
+    vtype : VehicleType
+        A vehicle type that defines the associated running costs of the vehicle
+    start_location : Location | None, optional
+        A Location instance definition the lat/long of the start location, by
+        default None
+    end_location : Location | None, optional
+        A Location instance definition the lat/long of the end location, by
+        default None
+    """
+
     def __init__(
         self,
         name: str,
@@ -61,7 +117,7 @@ class Vehicle:
         self.start_location = start_location
         self.end_location = end_location
 
-    def _serialise(self) -> dict:
+    def _serialise(self) -> dict[Any, Any]:
         inner: dict[str, Any] = {}
         start: dict[str, Any] = {
             "type": self.start_type.value,

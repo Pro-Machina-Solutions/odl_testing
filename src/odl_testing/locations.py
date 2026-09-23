@@ -29,7 +29,11 @@ class Location:
 
 
 class Depot(Location):
-    """Define the location from which to dispatch/receive vehicles
+    """Define the location from which to dispatch/receive vehicles.
+
+    Note that vehicles do not need to start or end at a depot and their
+    location can be dynamic throughout the day. This is just for the most
+    simple case, to be expanded on later.
 
     Parameters
     ----------

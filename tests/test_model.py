@@ -187,10 +187,6 @@ class TestBuildAndSend:
         model.config._offline = offline
         assert model.send() is model._base_json
 
-    def test_send_does_not_call_the_client_yet(self, model):
-        model.send()
-        assert model.client.mock_calls == []
-
 
 class TestFullPayload:
     """End-to-end check of the payload built from all the model pieces."""

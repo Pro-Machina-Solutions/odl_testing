@@ -1,5 +1,4 @@
 import datetime as dt
-import json
 import random
 from string import ascii_letters
 
@@ -24,9 +23,17 @@ MAX_LON = -69.937
 NUM_LOCATIONS = 20
 
 # We can set a time window for when our problem spans. For now, we'll just
-# cover one shift
-START_TIME = "2026-08-07 09:00:00"
-END_TIME = "2026-08-07 18:00:00"
+# cover one shift for tomorrow
+START_TIME = (
+    (dt.datetime.now() + dt.timedelta(days=1))
+    .replace(hour=9, minute=0, second=0, microsecond=0)
+    .isoformat()
+)
+END_TIME = (
+    (dt.datetime.now() + dt.timedelta(days=1))
+    .replace(hour=18, minute=0, second=0, microsecond=0)
+    .isoformat()
+)
 
 # Internal plumbing to make sure the job times always fall within the shift we
 # just chose and nothing is raised 30 mins before the end of the shift
@@ -96,6 +103,4 @@ for i in range(2):
 
 model.build()
 
-print(json.dumps(model._base_json, indent=4))
-print(model.model_id)
-# send = model.send()
+send = model.send()
