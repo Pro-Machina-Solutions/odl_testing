@@ -1,3 +1,4 @@
+import datetime as dt
 from enum import StrEnum
 from typing import Any
 
@@ -6,7 +7,7 @@ from .locations import Location
 
 class VehicleAct(StrEnum):
     START_AT_DEPOT = "START_AT_DEPOT"
-    END_AT_DEPOT = "END_AT_DEPOT"
+    END_AT_DEPOT = "RETURN_TO_DEPOT"
 
 
 class VehicleType:
@@ -64,15 +65,15 @@ class Vehicle:
         inner: dict[str, Any] = {}
         start: dict[str, Any] = {
             "type": self.start_type.value,
-            "openTime": self.start_time,
+            "openTime": dt.datetime.fromisoformat(self.start_time).isoformat(),
         }
         if self.start_location is not None:
-            start["coordinate"] = (self.start_location._serialize(),)
+            start["coordinate"] = self.start_location._serialize()
 
         end: dict[Any, Any] = {
             "type": self.end_type.value,
-            "lateTime": self.late_time,
-            "closeTime": self.end_time,
+            "lateTime": dt.datetime.fromisoformat(self.late_time).isoformat(),
+            "closeTime": dt.datetime.fromisoformat(self.end_time).isoformat(),
         }
         if self.end_location is not None:
             end["coordinate"] = self.end_location._serialize()

@@ -221,4 +221,5 @@ __marimo__/
 delete_me.py
 .vscode
 *.DS_Store
+*.json
 

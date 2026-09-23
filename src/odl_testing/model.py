@@ -1,9 +1,10 @@
+import uuid
 from typing import Any
 
+from .client import Client
 from .config import Config
 from .jobs import _Job
 from .vehicles import Vehicle
-import json
 
 
 class Model:
@@ -11,13 +12,15 @@ class Model:
         self.config = config if config is not None else Config()
         self.jobs: list[dict[str, Any]] = []
         self.vehicles: list[dict[str, Any]] = []
-        self.base_json: dict[str, Any] = {
+        self._base_json: dict[str, Any] = {
             "data": {
                 "jobs": self.jobs,
                 "vehicles": self.vehicles,
             },
             "configuration": self.config._serialize(),
         }
+        self.client = Client()
+        self.model_id = uuid.uuid4().hex
 
     def add_job(self, job: _Job) -> None:
         if not isinstance(job, _Job):
@@ -29,5 +32,12 @@ class Model:
             raise TypeError("Incorrect vehicle type")
         self.vehicles.append(vehicle._serialise())
 
-    def build(self):
-        print(json.dumps(self.base_json, indent=4))
+    def build(self) -> dict[str, Any]:
+        # TODO for now we just send the same JSON object back, but we might
+        # need to add other modifications required in future
+        return self._base_json
+
+    def send(self) -> dict[str, Any]:
+        if self.config._offline:
+            return self._base_json
+        return self._base_json
