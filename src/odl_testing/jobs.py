@@ -36,7 +36,11 @@ class _Job:
 
     def _serialize(self) -> dict[str, Any]:
         assert self._job_type is not None
-        stops: dict[str, str | int] = {}
+        stops: dict[str, Any] = {
+            "type": self._job_type.value,
+            "durationMillis": self.duration,
+            "coordinate": self.location._serialize(),
+        }
         rtn = {
             "_id": self.name,
             "stops": [stops],

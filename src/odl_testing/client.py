@@ -9,8 +9,8 @@ from .config import Config
 class Client:
     """Object used to communicate with the ODL Live instance"""
 
-    def __init__(self, config: Config | None = None) -> None:
-        self.config = config if config is not None else Config()
+    def __init__(self, config: Config) -> None:
+        self.config = config
         auth = base64.b64encode(
             (f"{self.config.username}:{self.config.password}").encode()
         ).decode("utf-8")

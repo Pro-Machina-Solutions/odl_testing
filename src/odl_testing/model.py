@@ -19,7 +19,7 @@ class Model:
             },
             "configuration": self.config._serialize(),
         }
-        self.client = Client()
+        self.client = Client(config=self.config)
         self.model_id = uuid.uuid4().hex
 
     def add_job(self, job: _Job) -> None:

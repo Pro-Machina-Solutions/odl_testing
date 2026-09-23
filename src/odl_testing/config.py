@@ -48,14 +48,14 @@ class Config:
         self.username = username
         self.password = password
 
-        self._offline = True
+        self._offline = False
         if self.username is None or self.password is None:
             warnings.warn(
                 "No login credentials supplied, so problem can only be built"
                 " but not dispatched to be solved",
                 stacklevel=1,
             )
-            self._offline = False
+            self._offline = True
 
         self.base_url = base_url
         self.port = str(port)
